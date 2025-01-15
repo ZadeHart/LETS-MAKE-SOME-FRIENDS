@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
-import { Course, Student } from '../models/index.js';
+import models from '../models/index.js';
+// import Thought from '../models/index.js';
+// import Reaction from '../models/index.js';
+// Course = Thought. Student = Reaction
 
 /**
  * GET All Courses /courses
@@ -7,8 +10,8 @@ import { Course, Student } from '../models/index.js';
 */
 export const getAllThoughts = async(_req: Request, res: Response) => {
     try {
-        const courses = await Course.find();
-        res.json(courses);
+        const thoughts = await models.Thought.find();
+        res.json(thoughts);
     } catch(error: any){
         res.status(500).json({
             message: error.message
@@ -16,6 +19,22 @@ export const getAllThoughts = async(_req: Request, res: Response) => {
     }
 }
 
+  export const getSingleThought = async (req: Request, res: Response) => {
+    try {
+      const user = await models.Thought.findOne({ _id: req.params.userId })
+        .select('-__v');
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that ID' });
+      }
+
+      res.json(user);
+      return;
+    } catch (err) {
+      res.status(500).json(err);
+      return;
+    }
+  }
 
   /**
  * POST Course /courses
@@ -23,12 +42,12 @@ export const getAllThoughts = async(_req: Request, res: Response) => {
  * @returns a single Course object
 */
 export const createThought = async (req: Request, res: Response) => {
-    const { course } = req.body;
+    const { thought } = req.body;
     try {
-      const newCourse = await Course.create({
-        course
+      const newThought = await models.Thought.create({
+        thought
       });
-      res.status(201).json(newCourse);
+      res.status(201).json(newThought);
     } catch (error: any) {
       res.status(400).json({
         message: error.message
@@ -43,17 +62,17 @@ export const createThought = async (req: Request, res: Response) => {
 */
 export const updateThought = async (req: Request, res: Response) => {
     try {
-      const course = await Course.findOneAndUpdate(
-        { _id: req.params.courseId },
+      const thought = await models.Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
         { $set: req.body },
         { runValidators: true, new: true }
       );
 
-      if (!course) {
-        res.status(404).json({ message: 'No course with this id!' });
+      if (!thought) {
+        res.status(404).json({ message: 'No thought with this id!' });
       }
 
-      res.json(course)
+      res.json(thought)
     } catch (error: any) {
       res.status(400).json({
         message: error.message
@@ -68,15 +87,49 @@ export const updateThought = async (req: Request, res: Response) => {
 */
 export const deleteThought = async (req: Request, res: Response) => {
     try {
-      const course = await Course.findOneAndDelete({ _id: req.params.courseId});
+      const thought = await models.Thought.findOneAndDelete({ _id: req.params.thoughtId});
       
-      if(!course) {
+      if(!thought) {
         res.status(404).json({
-          message: 'No course with that ID'
+          message: 'No thought with that ID'
         });
       } else {
-        await Student.deleteMany({ _id: { $in: course.students } });
-        res.json({ message: 'Course and students deleted!' });
+        await models.Thought.deleteMany({ _id: { $in: thought.reactions } });
+        res.json({ message: 'Thought and reactions deleted!' });
+      }
+      
+    } catch (error: any) {
+      res.status(500).json({
+        message: error.message
+      });
+    }
+  };
+
+  export const createReaction = async (req: Request, res: Response) => {
+    const { reaction } = req.body;
+    try {
+      const newReaction = await models.Thought.create({
+        reaction
+      });
+      res.status(201).json(newReaction);
+    } catch (error: any) {
+      res.status(400).json({
+        message: error.message
+      });
+    }
+  };
+
+  export const deleteReaction = async (req: Request, res: Response) => {
+    try {
+      const reaction = await models.Thought.findOneAndDelete({ _id: req.params.thoughtId});
+      
+      if(!reaction) {
+        res.status(404).json({
+          message: 'No thought with that ID'
+        });
+      } else {
+        await models.Thought.deleteMany({ _id: { $in: reaction } });
+        res.json({ message: 'Thought and reactions deleted!' });
       }
       
     } catch (error: any) {

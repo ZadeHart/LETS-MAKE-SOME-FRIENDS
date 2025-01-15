@@ -1,4 +1,5 @@
 import User from './User.js';
 import Thought from './Thought.js'
+import reactionSchema from './Thought.js'
 
-export default { User, Thought, };
+export default { User, Thought, reactionSchema };

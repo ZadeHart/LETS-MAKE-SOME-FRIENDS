@@ -27,6 +27,7 @@ const userSchema = new Schema<IUser>(
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Thought',
+                default: []
             },
         ],
 
@@ -34,6 +35,7 @@ const userSchema = new Schema<IUser>(
                 {
                 type: Schema.Types.ObjectId,
                 ref: 'User',
+                default: []
                 },
             ],
     },
@@ -53,7 +55,7 @@ userSchema
         return this.friends?.length;
 });
 
-const User = model('User', userSchema);
+const User = model<IUser>('User', userSchema);
 
 User
     .create({
