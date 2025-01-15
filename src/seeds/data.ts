@@ -10,7 +10,7 @@ const email = [
     'fire@sage.com',
     'wind@sage.com',
     'earth@sage.com'
-]
+];
 
 // Get a random item given an array
 export const getRandomArrItem = (arr: any) => arr[Math.floor(Math.random() * arr.length)];

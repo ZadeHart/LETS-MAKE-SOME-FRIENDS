@@ -1,4 +1,6 @@
-// import db from '../config/connection.js';
+// import db from '../config/connections.js';
+// import models from '../models/index.js';
+// import User from '../models/User.js';
 // import Thought from '../models/index.js';
 // // Course = Thought. Student = Reaction
 
@@ -31,17 +33,17 @@
 //   }
 
 //   // Add students to the collection and await the results
-//   const studentData = await Student.create(students);
+//   const studentData = await User.create(users);
 
 //   // Add courses to the collection and await the results
-//   await Course.create({
+//   await models.Thought.create({
 //     name: 'UCLA',
 //     inPerson: false,
 //     students: [...studentData.map(({ _id }: { [key: string]: any }) => _id)],
 //   });
 
 //   // Log out the seed data to indicate what should appear in the database
-//   console.table(students);
+//   console.table(users);
 //   console.info('Seeding complete! 🌱');
 //   process.exit(0);
 // } catch (error) {
