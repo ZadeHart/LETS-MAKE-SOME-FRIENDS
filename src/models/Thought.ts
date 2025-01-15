@@ -1,5 +1,5 @@
-import { Schema, Types, model, ObjectId, type Document } from 'mongoose';
-
+import { Schema, model, ObjectId } from 'mongoose';
+import reactionSchema from './Reaction';
 
 interface IThought extends Document {
     thoughtText: string;
@@ -7,34 +7,6 @@ interface IThought extends Document {
     username: string;
     reactions: ObjectId[];
 };
-
-const reactionSchema = new Schema<IThought>(
-    {
-        reactionId: {
-            type: Schema.Types.ObjectId,
-            ref: 'reaction_id',
-            default: () => new Types.ObjectId(),
-        },
-
-        reactionBody: {
-            type: String,
-            required: true,
-            maxlength: 280,
-        },
-
-        username: {
-            type: String,
-            required: true,
-        },
-
-        createdAt: {
-            type: Date,
-            default: Date.now,
-        },
-        
-        timestamps: true
-    }
-);
 
 
 const thoughtSchema = new Schema<IThought>(
@@ -70,6 +42,6 @@ thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions?.length;
 });
 
-const Thought = model('thought', thoughtSchema);
+const Thought = model<IThought>('thought', thoughtSchema);
 
-export default Thought ;
+export default Thought;

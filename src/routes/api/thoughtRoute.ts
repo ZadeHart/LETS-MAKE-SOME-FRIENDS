@@ -1,12 +1,20 @@
 import { Router } from 'express';
 const router = Router();
-import { getThoughts, getSingleThought, createThought, updateThought, deleteThought, createReaction, deleteReaction  } from '../../controllers/thoughtController.js';
+import {
+    getAllThoughts,
+    getSingleThought,
+    createThought,
+    updateThought,
+    deleteThought,
+    createReaction,
+    deleteReaction
+} from '../../controllers/thoughtController.js';
 
 // /api/thoughts
 router
 
 .route('/')
-.get(getThoughts)
+.get(getAllThoughts)
 .get(getSingleThought)
 .post(createThought)
 .put(updateThought)
