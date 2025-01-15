@@ -45,17 +45,17 @@ console.log('Model User', models.User)
 
   export const updateUser = async (req: Request, res: Response) => {
       try {
-        const course = await models.User.findOneAndUpdate(
-          { _id: req.params.courseId },
+        const user = await models.User.findOneAndUpdate(
+          { _id: req.params.userId },
           { $set: req.body },
           { runValidators: true, new: true }
         );
   
-        if (!course) {
-          res.status(404).json({ message: 'No course with this id!' });
+        if (!user) {
+          res.status(404).json({ message: 'No user with this id!' });
         }
   
-        res.json(course)
+        res.json(user)
       } catch (error: any) {
         res.status(400).json({
           message: error.message
@@ -73,36 +73,63 @@ console.log('Model User', models.User)
       }
 
       await models.User.deleteMany({ _id: { $in: user } });
-      res.json({ message: 'User and associated apps deleted!' })
+      res.json({ message: 'Users deleted!' })
       return;
     } catch (err) {
       res.status(500).json(err);
       return;
     }
+  };
+
+  export const getFriends = async (_req: Request, res: Response) => {
+    try {
+      const friends = await models.User.find();
+      res.json(friends);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
 
-  // export const createFriend = async (req: Request, res: Response) => {
-  //   try {
-  //     const friend = await models.Friend.create(req.body);
-  //     res.json(friend);
-  //   } catch (err) {
-  //     res.status(500).json(err);
-  //   }
-  // }
+  export const createFriend = async (req: Request, res: Response) => {
+    console.log('You are adding a friend');
+    console.log(req.body);
+    try {
+        const friend = await models.User.findOneAndUpdate(
+            { _id: req.params.userId },
+            { $addToSet: { users: req.body } },
+            { runValidators: true, new: true }
+        );
 
-  // export const deleteFriend = async (req: Request, res: Response) => {
-  //   try {
-  //     const friend = await models.Friend.findOneAndDelete({ _id: req.params.userId });
+        if (!friend) {
+            return res
+                .status(404)
+                .json({ message: 'No friend found with that ID :(' });
+        }
 
-  //     if (!friend) {
-  //       return res.status(404).json({ message: 'No user with that ID' });
-  //     }
+        res.json(friend);
+        return;
+    } catch (err) {
+        res.status(500).json(err);
+        return;
+    }
+}
 
-  //     await models.Friend.deleteMany({ _id: { $in: friend.Friend } });
-  //     res.json({ message: 'User and associated apps deleted!' })
-  //     return;
-  //   } catch (err) {
-  //     res.status(500).json(err);
-  //     return;
-  //   }
-  // }
+export const deleteFriend = async (req: Request, res: Response) => {
+  try {
+      const friend = await models.User.findOneAndUpdate(
+          { _id: req.params.userId },
+          { $pull: { userId: req.params.userId } },
+          { runValidators: true, new: true }
+      );
+
+      if (!friend) {
+          return res
+              .status(404)
+              .json({ message: 'No friend found with that ID :(' });
+      }
+
+      return res.json(friend);
+  } catch (err) {
+      return res.status(500).json(err);
+  }
+}

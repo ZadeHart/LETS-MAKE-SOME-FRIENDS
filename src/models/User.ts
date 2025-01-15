@@ -57,12 +57,12 @@ userSchema
 
 const User = model<IUser>('User', userSchema);
 
-User
-    .create({
-        username: 'ZadeHart',
-        email: 'pumpkinboy@midnight.com',
-        thoughts: 'I like pizza',
-        friends: 'Me, myself, and I'
-    })
+// User
+//     .create({
+//         username: 'ZadeHart',
+//         email: 'pumpkinboy@midnight.com',
+//         thoughts: 'I like pizza',
+//         friends: 'Me, myself, and I'
+//     })
 
 export default User;
