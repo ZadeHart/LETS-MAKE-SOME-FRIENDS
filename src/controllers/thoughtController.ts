@@ -109,13 +109,12 @@ export const deleteThought = async (req: Request, res: Response) => {
       }
     }
   
-
   export const createReaction = async (req: Request, res: Response) => {
     console.log('You are adding a reaction');
     console.log(req.body);
     try {
         const reaction = await models.Thought.findOneAndUpdate(
-            { _id: req.params.reactionId },
+            { _id: req.params.thoughtId },
             { $addToSet: { reactions: req.body } },
             { runValidators: true, new: true }
         );
@@ -133,10 +132,13 @@ export const deleteThought = async (req: Request, res: Response) => {
 }
 
 export const deleteReaction = async (req: Request, res: Response) => {
+  console.log('You are removing a reaction');
+  console.log(req.params);
+
   try {
       const reaction = await models.Thought.findOneAndUpdate(
-          { _id: req.params.reactionId },
-          { $pull: { reactionId: req.params.reactionId } },
+          { _id: req.params.thoughtId },
+          { $pull: { reactions: req.body } },
           { runValidators: true, new: true }
       );
 
