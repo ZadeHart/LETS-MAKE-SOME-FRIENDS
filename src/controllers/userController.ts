@@ -92,11 +92,11 @@ console.log('Model User', models.User)
 
   export const createFriend = async (req: Request, res: Response) => {
     console.log('You are adding a friend');
-    console.log(req.body);
+    console.log(req.params);
     try {
         const friend = await models.User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $addToSet: { users: req.body } },
+            { $addToSet: { friends: req.params.friendId } },
             { runValidators: true, new: true }
         );
 
@@ -106,19 +106,20 @@ console.log('Model User', models.User)
                 .json({ message: 'No friend found with that ID :(' });
         }
 
-        res.json(friend);
-        return;
+        return res.json(friend);
     } catch (err) {
-        res.status(500).json(err);
-        return;
+        return res.status(500).json(err);
     }
 }
 
 export const deleteFriend = async (req: Request, res: Response) => {
+  console.log('You are removing a friend');
+  console.log(req.params);
+
   try {
       const friend = await models.User.findOneAndUpdate(
           { _id: req.params.userId },
-          { $pull: { userId: req.params.userId } },
+          { $pull: { friends: req.params.friendId } },
           { runValidators: true, new: true }
       );
 

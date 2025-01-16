@@ -1,6 +1,6 @@
-import { Schema, model, Document, ObjectId } from 'mongoose';
+import { Schema, model, ObjectId } from 'mongoose';
 
-interface IUser extends Document {
+interface IUser {
     username: string;
     email: string;
     thoughts: ObjectId[];
@@ -13,7 +13,7 @@ const userSchema = new Schema<IUser>(
             type: String,
             unique: true,
             required: true,
-            trimmed: true
+            trim: true
         },
 
         email: {
@@ -27,7 +27,6 @@ const userSchema = new Schema<IUser>(
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Thought',
-                default: []
             },
         ],
 
@@ -35,7 +34,6 @@ const userSchema = new Schema<IUser>(
                 {
                 type: Schema.Types.ObjectId,
                 ref: 'User',
-                default: []
                 },
             ],
     },
@@ -51,18 +49,10 @@ const userSchema = new Schema<IUser>(
 userSchema
 
     .virtual('friendCount')
-    .get(function (this: IUser) {
-        return this.friends?.length;
+    .get(function () {
+        return this.friends?.length || 0;
 });
 
 const User = model<IUser>('User', userSchema);
-
-// User
-//     .create({
-//         username: 'ZadeHart',
-//         email: 'pumpkinboy@midnight.com',
-//         thoughts: 'I like pizza',
-//         friends: 'Me, myself, and I'
-//     })
 
 export default User;

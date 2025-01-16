@@ -1,19 +1,18 @@
-import { Schema, Types } from 'mongoose';
+import { Document, Schema, Types, ObjectId } from 'mongoose';
 
 
-// interface IReaction extends Document {
-//     reactionId: ObjectId,
-//     reactionBody: string,
-//     username: string,
-//     createdAt: Date
+interface IReaction extends Document {
+    reactionId: ObjectId,
+    reactionBody: string,
+    username: string,
+    createdAt: Date
 
-// };
+};
 
-const reactionSchema = new Schema/*<IReaction>*/(
+const reactionSchema = new Schema<IReaction>(
     {
         reactionId: {
             type: Schema.Types.ObjectId,
-            ref: 'reaction_id',
             default: () => new Types.ObjectId(),
         },
 
@@ -31,6 +30,8 @@ const reactionSchema = new Schema/*<IReaction>*/(
         createdAt: {
             type: Date,
             default: Date.now,
+            getter: (timestamp: Date) => timestamp.toLocaleString(), 
+
         },
     },
     {
@@ -40,7 +41,6 @@ const reactionSchema = new Schema/*<IReaction>*/(
             getters: true
         },
 
-        timestamps: true,
         id: false
     }
 );
